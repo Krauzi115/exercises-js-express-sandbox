@@ -53,8 +53,9 @@ app.get('/', (request, response) => {
     <p>This application is meant to highlight some of the essential ideas in web development.  You should already be familiar with some basic HTML and know how to create a standalone, static HTML document that you can open with your browser.</p>
     <p>At its core, every web application has the same job: listen for incoming requests, generate an HTML document, and send that document back to the browser.  Unlike a static HTML document, a web application can respond to dynamic, user-supplied information.  If a static HTML document is like a vending machine then a web application is like a restaurant with a real, live chef.</p>
   `;
-
+  let greet = `<li><a href="/greet?baked_good=cupcakes&count=1138">Bake 1138 cupcakes</a></li>`;
   let content = `
+  
     <h1>Hello, World!</h1>
     ${appDescription}
     <p>Start exploring by clicking the links below.</p>
@@ -73,6 +74,7 @@ app.get('/', (request, response) => {
     <li><a href="/waffles/custom?type=nutella">Nutella waffles</a></li>
     <li><a href="/bake?baked_good=cookies&count=10">Bake 10 cookies</a></li>
     <li><a href="/bake?baked_good=loaves+of+bread&count=5">Bake 5 loaves of bread</a> — notice how we represent spaces in the URL.</li>
+    <li><a href="/greet?name=">greetings and salutations page</a></li>
     <li><a href="/bake?baked_good=cupcakes&count=1138">Bake 1138 cupcakes</a></li>
     </ul>
   `;
@@ -98,6 +100,7 @@ app.get('/waffles/chocolate', (request, response) => {
     <p>Chocolate waffles: better than regular waffles.</p>
     <p><a href="/">Back to the homepage</a></p>
   `;
+
 
   response.send(getLayoutHTML(content));
 });
@@ -145,6 +148,40 @@ app.get('/bake', (request, response) => {
     <p>
       I like ${bakedGood}, too.  Let's bake ${count} of them.
     </p>
+  `;
+
+  content += '<ul>';
+
+  for (let i = 1; i <= count; i++) {
+    content += `<li>${bakedGood} number ${i}</li>`;
+  }
+
+  content += '</ul>';
+
+  response.send(getLayoutHTML(content));
+});
+
+app.get('/greet', (request, response) => {
+  let count = Number.parseInt(request.query.count);
+  let name = request.query.name;
+
+  let content = `
+    <h1>Greetings, salutations, and sunny days ${name}!</h1>
+    <p>
+      <a href='/'>Back to the homepage</a>
+    </p>
+    <p>
+      Give us a <code>name</code>?
+    </p>
+    <form method="GET" action="/name">
+      <div class="form-section">
+        <label for="name">Name:</label>
+        <input type="number" name="count" id="count" required>
+      </div>
+      <div class="form-section">
+        <input type="submit" value="Submit">
+      </div>
+    </form>
   `;
 
   content += '<ul>';
